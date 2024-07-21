@@ -19,11 +19,9 @@ func NewPrayerTimeService(apiBaseURL string) *PrayerTimeService {
 
 // GetPrayerTimesByCity API'den dua vakitlerini alır ve modelimize dönüştürür
 func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.PrayerTimes, error) {
-	// API URL'sini oluşturun
 	url := fmt.Sprintf("%s%s", s.apiBaseURL, city.City)
 	fmt.Println(url)
 
-	// API isteği yapın
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println("hata 1 : ", err)
@@ -31,7 +29,6 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 	}
 	defer resp.Body.Close()
 
-	// API yanıtını işleyin
 	if resp.StatusCode != http.StatusOK {
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
@@ -41,7 +38,6 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 		return nil, fmt.Errorf("failed to fetch data from API. Status: %d, Response: %s", resp.StatusCode, string(body))
 	}
 
-	// API yanıtını işleyin
 	if resp.StatusCode != http.StatusOK {
 		fmt.Println(err)
 		return nil, errors.New("failed to fetch data from API")
@@ -107,13 +103,13 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 			GregorianDate: models.GregorianDate{
 				Date:  item.Date.Gregorian.Date,
 				Day:   item.Date.Gregorian.Day,
-				Month: item.Date.Gregorian.Month.Number, // Number değeri kullanılır
+				Month: item.Date.Gregorian.Month.Number,
 				Year:  item.Date.Gregorian.Year,
 			},
 			HijriDate: models.HijriDate{
 				Date:  item.Date.Hijri.Date,
 				Day:   item.Date.Hijri.Day,
-				Month: item.Date.Hijri.Month.Number, // Number değeri kullanılır
+				Month: item.Date.Hijri.Month.Number,
 				Year:  item.Date.Hijri.Year,
 			},
 		})

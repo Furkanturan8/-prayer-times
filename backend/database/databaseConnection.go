@@ -33,6 +33,7 @@ func DBInstance() (*gorm.DB, error) {
 		&models.Timings{},
 		&models.GregorianDate{},
 		&models.HijriDate{},
+		&models.Phrases{},
 	)
 	if err != nil {
 		return nil, fmt.Errorf("AutoMigrate failed: %v", err)

@@ -6,12 +6,12 @@ type Timings struct {
 	CityID          int    `json:"city_id" gorm:"unique"`
 	GregorianDateID int    `json:"gregorian_date_id"` // miladi takvim
 	HijriDateID     int    `json:"hijri_date_id"`     // hicri takvim
-	Fajr            string `json:"Fajr"`              // imsak
-	Dhuhr           string `json:"Dhuhr"`             // gün doğumu
-	Asr             string `json:"Asr"`               // öğle
-	Maghrib         string `json:"Maghrib"`           // ikindi
-	Isha            string `json:"Isha"`              // aksam
-	Imsak           string `json:"Imsak"`             // yatsı
+	Imsak           string `json:"imsak"`             // imsak
+	Sunrise         string `json:"sunrise"`           // gün doğumu
+	Dhuhr           string `json:"dhuhr"`             // öğle
+	Asr             string `json:"asr"`               // ikindi
+	Maghrib         string `json:"maghrib"`           // aksam
+	Isha            string `json:"isha"`              // yatsı
 }
 
 // GregorianDate modeli

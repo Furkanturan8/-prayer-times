@@ -17,10 +17,9 @@ func NewPrayerTimeService(apiBaseURL string) *PrayerTimeService {
 	return &PrayerTimeService{apiBaseURL: apiBaseURL}
 }
 
-// GetPrayerTimesByCity API'den dua vakitlerini alır ve modelimize dönüştürür
+// GetPrayerTimesByCity API'den namaz vakitlerini alır ve modelimize dönüştürür
 func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.PrayerTimes, error) {
 	url := fmt.Sprintf("%s%s", s.apiBaseURL, city.City)
-	fmt.Println(url)
 
 	resp, err := http.Get(url)
 	if err != nil {
@@ -46,7 +45,7 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 	var apiResponse struct {
 		Data []struct {
 			Timings struct {
-				Fajr    string `json:"Fajr"`
+				Sunrise string `json:"Sunrise"`
 				Dhuhr   string `json:"Dhuhr"`
 				Asr     string `json:"Asr"`
 				Maghrib string `json:"Maghrib"`
@@ -93,7 +92,7 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 				CityID:          city.ID,
 				GregorianDateID: i,
 				HijriDateID:     i,
-				Fajr:            item.Timings.Fajr,
+				Sunrise:         item.Timings.Sunrise,
 				Dhuhr:           item.Timings.Dhuhr,
 				Asr:             item.Timings.Asr,
 				Maghrib:         item.Timings.Maghrib,
@@ -117,4 +116,21 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 	}
 
 	return prayerTimesList, nil
+}
+
+func (s *PrayerTimeService) GetPrayerTimeByCity(city models.City, day int) (*models.PrayerTimes, error) {
+	prayerTimesList, err := s.GetPrayerTimesByCity(city)
+	if err != nil {
+		return nil, err
+	}
+
+	// Gün 1 ile prayerTimesList uzunluğu arasında olmalıdır
+	if day < 1 || day > len(prayerTimesList) {
+		fmt.Printf("Invalid Day: %d\n", day)
+		return nil, err
+	}
+
+	prayerTimeByDay := prayerTimesList[day-1]
+
+	return &prayerTimeByDay, nil
 }

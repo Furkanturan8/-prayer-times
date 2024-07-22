@@ -19,7 +19,7 @@ type Config struct {
 // Load loads configuration from environment variables or .env file
 func Load() (*Config, error) {
 	// Load environment variables from .env file
-	err := godotenv.Load(".env")
+	err := godotenv.Load("backend/.env")
 	if err != nil {
 		log.Println("Error loading .env file, using default environment variables.")
 	}

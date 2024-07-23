@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"namaz-vakitleri/database"
 	"namaz-vakitleri/handlers"
 	"namaz-vakitleri/routes"
@@ -17,6 +18,12 @@ func main() {
 
 	// Middleware to log requests
 	app.Use(requestLogger)
+
+	// CORS middleware'i ekleyin
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:8080", // Vue uygulamanızın çalıştığı adres
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	// DB Init
 	db, err := database.DBInstance()

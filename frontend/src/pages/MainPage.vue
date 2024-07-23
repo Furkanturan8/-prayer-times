@@ -57,6 +57,7 @@ body, html {
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: inset 0 0 450px rgba(1, 1, 1, 1); /* İçten gölge efekti */
 }
 
 .clock-container {

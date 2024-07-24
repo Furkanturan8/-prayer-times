@@ -1,9 +1,10 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import axios from 'axios';
 import {onMounted, onUnmounted, ref} from 'vue';
 import router from "@/router";
 import Swal from "sweetalert2";
+import {fetchPrayerTimes} from "@/components/prayerTimesApi";
+import {calculateCountdown} from "@/components/countdownUtils";
 
 const route = useRoute();
 const cityName = route.query.city;
@@ -12,114 +13,10 @@ const timings = ref({});
 const hijriDate = ref({});
 const gregorianDate = ref({});
 
-const now = new Date();
-let today = now.getDate()
+const nowPrayer = ref('') // içinde bulundupumuz vakit
+const countdown = ref(''); // sayacımız
+let NEXTPRAYER = ref(''); // sonraki vakit
 
-const countdown = ref('');
-let NEXTPRAYER = ref('');
-
-// API'den veri çekme
-const fetchPrayerTimes = async () => {
-  try {
-    const response = await axios.get(`http://localhost:3000/prayer-times/${cityName}/${today}`);
-    const { timings: t,hijri_date: hijri_date,gregorian_date: gregorian_date } = response.data;
-
-    // Verileri ref'lere ayırma
-    timings.value = t;
-    hijriDate.value = hijri_date;
-    gregorianDate.value = gregorian_date;
-
-  } catch (error) {
-    console.error('Vakitler alınırken bir hata oluştu:', error);
-  }
-};
-
-const getCurrentTime = () => {
-  const now = new Date();
-  return {
-    hours: now.getHours(),
-    minutes: now.getMinutes(),
-  };
-};
-
-const timeToMinutes = (timeString) => {
-  if (!timeString) return 0; // Geçersiz zaman dizesi durumunda 0 dakika döndür
-
-  // Zaman dizesinden saat dilimini ayırma
-  const [timePart] = timeString.split(' (');
-
-  // Saat ve dakika bilgilerini ayırma
-  const [hours, minutes] = timePart.split(':').map(Number);
-
-  return hours * 60 + minutes;
-};
-
-const calculateCountdown = () => {
-  const current = getCurrentTime();
-  const currentMinutes = current.hours * 60 + current.minutes;
-
-  if (!timings.value || Object.keys(timings.value).length === 0) {
-    countdown.value = 'Veri Yüklenmedi';
-    console.log('Namaz vakitleri verisi boş');
-    return;
-  }
-
-  const times = [
-    { name: 'İmsak', time: timings.value.imsak },
-    { name: 'Sabah', time: timings.value.sunrise },
-    { name: 'Öğle', time: timings.value.dhuhr },
-    { name: 'İkindi', time: timings.value.asr },
-    { name: 'Akşam', time: timings.value.maghrib },
-    { name: 'Yatsı', time: timings.value.isha },
-  ];
-
-  let nextPrayerFound = false;
-  for (let i = 0; i < times.length; i++) {
-    const currentPrayer = times[i];
-    const nextPrayer = times[i + 1] || null;
-
-    const currentPrayerMinutes = timeToMinutes(currentPrayer.time);
-    const nextPrayerMinutes = nextPrayer ? timeToMinutes(nextPrayer.time) : Infinity;
-
-    console.log(`Namaz: ${currentPrayer.name}, Dakika: ${currentPrayerMinutes}`);
-    console.log('Sonraki namazın dakikaları:', nextPrayerMinutes);
-
-    if (currentMinutes >= currentPrayerMinutes && currentMinutes < nextPrayerMinutes) {
-      nextPrayerFound = true;
-      const nextPrayerTime = nextPrayer ? timeToMinutes(nextPrayer.time) : null;
-      if (nextPrayerTime) {
-        const minutesUntilNextPrayer = nextPrayerTime - currentMinutes;
-        const hoursUntilNextPrayer = Math.floor(minutesUntilNextPrayer / 60);
-        const minutesRemaining = minutesUntilNextPrayer % 60;
-        countdown.value = `${hoursUntilNextPrayer} saat ${minutesRemaining} dakika`;
-        console.log('Kalan süre:', countdown.value);
-      } else {
-        countdown.value = 'Gün Sonu';
-      }
-      NEXTPRAYER.value = nextPrayer.name
-      break;
-    }
-  }
-
-  // Eğer mevcut vakitler arasında geçerli bir vakit bulunamadıysa sonraki günün imsağına göre ayarla sayacı
-  if (!nextPrayerFound) {
-    const nextDayTimes = [
-      { name: 'İmsak', time: timings.value.imsak },
-    ];
-
-    if (nextDayTimes.length > 0) {
-      const nextDayPrayerTime = timeToMinutes(nextDayTimes[0].time);
-      const minutesUntilNextDayPrayer = (1440 - currentMinutes) + nextDayPrayerTime; // 1440 dakika = 24 saat
-      const hoursUntilNextDayPrayer = Math.floor(minutesUntilNextDayPrayer / 60);
-      const minutesRemaining = minutesUntilNextDayPrayer % 60;
-      countdown.value = `${hoursUntilNextDayPrayer} saat ${minutesRemaining} dakika`;
-    } else {
-      countdown.value = 'Gün Sonu';
-    }
-  }
-};
-
-// Fonksiyonları başlat
 const init = async () => {
   if (!cityName) {
     Swal.fire({
@@ -128,22 +25,34 @@ const init = async () => {
       icon: 'warning',
       confirmButtonText: 'Tamam',
     });
-    await router.push({name: 'cities'}); // /cities sayfasına yönlendirin
-    return;
-  }
-  await fetchPrayerTimes();
-  calculateCountdown();
+  await router.push({ name: 'cities' });
+  return;
+}
+
+try {
+  const data = await fetchPrayerTimes(cityName);
+  timings.value = data.timings;
+  hijriDate.value = data.hijri_date;
+  gregorianDate.value = data.gregorian_date;
+
+  const countdownData = calculateCountdown(timings.value, fetchPrayerTimes);
+  countdown.value = countdownData.countdown;
+  nowPrayer.value = countdownData.nowPrayer;
+  NEXTPRAYER.value = countdownData.nextPrayer;
+
+
+  console.log(countdownData.countdown)
+} catch (error) {
+  console.error('Vakitler alınırken bir hata oluştu:', error);
+}
 };
 
-// Sayfa yüklendiğinde ve her 30 saniyede bir yenileyin
 onMounted(() => {
   init();
   const interval = setInterval(() => {
-    fetchPrayerTimes();
-    calculateCountdown();
-  }, 30000); // 30 saniyede bir yenile
+    init();
+  }, 30000);
 
-  // Bileşen kaldırıldığında interval'i temizle
   onUnmounted(() => clearInterval(interval));
 });
 
@@ -169,7 +78,7 @@ onMounted(() => {
             <v-col class="right-column" cols="auto">
               <v-card class="countdown-card" >
                 <v-card-text class="countdown">
-                  <strong style="margin-bottom: 10px; color: white;  font-size: 18px;">{{ NEXTPRAYER }} Ezanına Kalan Süre</strong>
+                  <strong style="margin-bottom: 10px; color: white;  font-size: 18px;">{{ NEXTPRAYER }} Vaktine Kalan Süre</strong>
                   <div>{{ countdown}}</div>
                 </v-card-text>
               </v-card>

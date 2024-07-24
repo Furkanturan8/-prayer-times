@@ -6,14 +6,6 @@ import router from "@/router";
 const searchQuery = ref("");
 const cities = ref([]);
 
-// Türkçe karakterleri İngilizce karşılıklarına çeviren fonksiyon
-const convertTurkishChars = (str) => {
-  const map = {
-    'ı': 'i', 'İ': 'I', 'ç': 'c', 'Ç': 'C', 'ş': 's', 'Ş': 'S', 'ğ': 'g', 'Ğ': 'G', 'ü': 'u', 'Ü': 'U', 'ö': 'o', 'Ö': 'O'
-  };
-  return str.split('').map(char => map[char] || char).join('');
-};
-
 // backenddeki cities e ulaşıyoruz axios yardımıyla
 const fetchCities = async () => {
   try {
@@ -26,6 +18,18 @@ const fetchCities = async () => {
 
 // Bileşen yüklendiğinde şehirleri almak için fetchCities fonksiyonunu çağırıyoruz
 onMounted(fetchCities);
+
+const capitalizeFirstLetter = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+// Türkçe karakterleri İngilizce karşılıklarına çeviren fonksiyon
+const convertTurkishChars = (str) => {
+  const map = {
+    'ı': 'i', 'İ': 'I', 'ç': 'c', 'Ç': 'C', 'ş': 's', 'Ş': 'S', 'ğ': 'g', 'Ğ': 'G', 'ü': 'u', 'Ü': 'U', 'ö': 'o', 'Ö': 'O'
+  };
+  return str.split('').map(char => map[char] || char).join('');
+};
 
 const filteredCities = computed(() => {
   const query = convertTurkishChars(searchQuery.value.toLowerCase());
@@ -65,7 +69,7 @@ const goToPrayerTimes = (cityName) => {
             @click="goToPrayerTimes(city.city)"
         >
           <v-list-item-content>
-            <v-list-item-title>{{ city.city }}</v-list-item-title>
+            <v-list-item-title>{{ capitalizeFirstLetter(city.city) }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

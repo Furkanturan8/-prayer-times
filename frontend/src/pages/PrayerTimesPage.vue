@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import {onMounted, onUnmounted, ref} from 'vue';
 import router from "@/router";
 import Swal from "sweetalert2";
-import {fetchPrayerTimes} from "@/components/prayerTimesApi";
+import {fetchPrayerTimes, fetchPrayerTimesByDay} from "@/components/prayerTimesApi";
 import {calculateCountdown} from "@/components/countdownUtils";
 
 const route = useRoute();
@@ -30,7 +30,7 @@ const init = async () => {
 }
 
 try {
-  const data = await fetchPrayerTimes(cityName);
+  const data = await fetchPrayerTimesByDay(cityName);
   timings.value = data.timings;
   hijriDate.value = data.hijri_date;
   gregorianDate.value = data.gregorian_date;
@@ -56,15 +56,34 @@ onMounted(() => {
   onUnmounted(() => clearInterval(interval));
 });
 
+const goToPrayerTimes = async () => {
+  const url = router.resolve({
+    name: 'prayer-times-month',
+    params: {
+      month: gregorianDate.value.month_name
+    },
+    query: {
+      city: cityName
+    }
+  }).href;
+
+  window.open(url, '_blank');
+}
 </script>
 
 <template>
   <div class="background">
     <v-container>
       <v-card class="transparent-card" >
-        <v-card-title class="title">Namaz Vakitleri</v-card-title>
+        <v-row class="title-container">
+          <v-col>
+            <span class="title" style="margin-left: 15px">Namaz Vakitleri</span>
+          </v-col>
+          <v-col class="right-align">
+            <v-btn class="prayerTimes-btn" color="primary" @click="goToPrayerTimes">1 AYLIK NAMAZ VAKİTLERİ</v-btn>
+          </v-col>
+        </v-row>
         <v-card-subtitle class="subtitle">Şehir : {{ cityName }}</v-card-subtitle>
-
         <v-card class="transparent-card">
           <v-row>
             <v-col class="left-column">
@@ -206,5 +225,15 @@ body, html {
 th, td {
   font-size: 18px;
   padding: 10px;
+}
+
+.prayerTimes-btn {
+  margin-top: 5px;
+  margin-right: 5px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 315px;
 }
 </style>

@@ -50,7 +50,7 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 				Asr     string `json:"Asr"`
 				Maghrib string `json:"Maghrib"`
 				Isha    string `json:"Isha"`
-				Imsak   string `json:"Imsak"`
+				Fajr    string `json:"Fajr"`
 			} `json:"timings"`
 			Date struct {
 				Gregorian struct {
@@ -97,13 +97,14 @@ func (s *PrayerTimeService) GetPrayerTimesByCity(city models.City) ([]models.Pra
 				Asr:             item.Timings.Asr,
 				Maghrib:         item.Timings.Maghrib,
 				Isha:            item.Timings.Isha,
-				Imsak:           item.Timings.Imsak,
+				Imsak:           item.Timings.Fajr,
 			},
 			GregorianDate: models.GregorianDate{
-				Date:  item.Date.Gregorian.Date,
-				Day:   item.Date.Gregorian.Day,
-				Month: item.Date.Gregorian.Month.Number,
-				Year:  item.Date.Gregorian.Year,
+				Date:      item.Date.Gregorian.Date,
+				Day:       item.Date.Gregorian.Day,
+				Month:     item.Date.Gregorian.Month.Number,
+				MonthName: item.Date.Gregorian.Month.En,
+				Year:      item.Date.Gregorian.Year,
 			},
 			HijriDate: models.HijriDate{
 				Date:  item.Date.Hijri.Date,

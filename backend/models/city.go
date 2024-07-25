@@ -35,7 +35,7 @@ var CityCodes = map[string]int{
 	"gaziantep":     27,
 	"giresun":       28,
 	"gumushane":     29,
-	"hakari":        30,
+	"hakkari":       30,
 	"hatay":         31,
 	"isparta":       32,
 	"mersin":        33,

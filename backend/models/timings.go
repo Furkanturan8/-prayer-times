@@ -16,10 +16,11 @@ type Timings struct {
 
 // GregorianDate modeli
 type GregorianDate struct {
-	Date  string `json:"date"`
-	Day   string `json:"day"`
-	Month int    `json:"month"`
-	Year  string `json:"year"`
+	Date      string `json:"date"`
+	Day       string `json:"day"`
+	Month     int    `json:"month"`
+	MonthName string `json:"month_name"`
+	Year      string `json:"year"`
 }
 
 // HijriDate modeli

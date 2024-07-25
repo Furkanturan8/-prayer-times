@@ -69,6 +69,7 @@ const items = [
 </script>
 
 <style>
+margin-bottom:50px;
 .v-footer {
   background-color: rgba(200, 200, 200, 1);
 }

@@ -18,3 +18,7 @@ func PhraseRoutes(app *fiber.App, phraseHandler *handlers.PhraseHandler) {
 	app.Get("/phrases", phraseHandler.GetPhrases)
 	app.Get("/phrases/:id", phraseHandler.GetPhraseByID)
 }
+
+func ContactRoutes(app *fiber.App, contactHandler *handlers.ContactHandler) {
+	app.Post("/contact", contactHandler.Create)
+}

@@ -30,7 +30,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("DB Address: ", db)
+	// fmt.Println("DB Address: ", db)
 
 	// API Base URL
 	apiBaseURL := "https://api.aladhan.com/v1/calendarByCity/2024/7?country=turkey&city="
@@ -38,14 +38,17 @@ func main() {
 	prayerTimesService := services.NewPrayerTimeService(apiBaseURL)
 	cityService := services.NewCityService()
 	phraseService := services.NewPhraseService(db)
+	contactService := services.NewContactService(db)
 
 	prayerTimesHandler := handlers.NewPrayerTimeHandler(prayerTimesService)
 	cityHandler := handlers.NewCityHandler(cityService)
 	phraseHandler := handlers.NewPhraseHandler(phraseService)
+	contactHandler := handlers.NewContactHandler(contactService)
 
 	routes.PhraseRoutes(app, phraseHandler)
 	routes.CityRoutes(app, cityHandler)
 	routes.PrayerTimeRoutes(app, prayerTimesHandler)
+	routes.ContactRoutes(app, contactHandler)
 
 	app.Listen(":3000")
 }

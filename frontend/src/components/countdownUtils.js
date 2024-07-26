@@ -48,9 +48,9 @@ export const calculateCountdown = (timings) => {
         const nextPrayerMinutes = nextPrayerObj ? timeToMinutes(nextPrayerObj.time) : Infinity;
 
         // Debugging
-        console.log(`Current Prayer: ${currentPrayer.name}, Time: ${currentPrayer.time}, Minutes: ${currentPrayerMinutes}`);
-        console.log(`Next Prayer: ${nextPrayerObj ? nextPrayerObj.name : 'None'}, Time: ${nextPrayerObj ? nextPrayerObj.time : 'None'}, Minutes: ${nextPrayerMinutes}`);
-        console.log(`Current Minutes: ${currentMinutes}`);
+       // console.log(`Current Prayer: ${currentPrayer.name}, Time: ${currentPrayer.time}, Minutes: ${currentPrayerMinutes}`);
+       // console.log(`Next Prayer: ${nextPrayerObj ? nextPrayerObj.name : 'None'}, Time: ${nextPrayerObj ? nextPrayerObj.time : 'None'}, Minutes: ${nextPrayerMinutes}`);
+       // console.log(`Current Minutes: ${currentMinutes}`);
 
         if (currentMinutes >= currentPrayerMinutes && currentMinutes < nextPrayerMinutes) {
             nowPrayer = currentPrayer.name;

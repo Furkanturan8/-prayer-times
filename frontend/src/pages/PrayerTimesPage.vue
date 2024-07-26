@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import {onMounted, onUnmounted, ref} from 'vue';
 import router from "@/router";
 import Swal from "sweetalert2";
-import {fetchPrayerTimes, fetchPrayerTimesByDay} from "@/components/prayerTimesApi";
+import {fetchPrayerTimesByDay} from "@/components/prayerTimesApi";
 import {calculateCountdown} from "@/components/countdownUtils";
 
 const route = useRoute();
@@ -35,13 +35,10 @@ try {
   hijriDate.value = data.hijri_date;
   gregorianDate.value = data.gregorian_date;
 
-  const countdownData = calculateCountdown(timings.value, fetchPrayerTimes);
+  const countdownData = calculateCountdown(timings.value);
   countdown.value = countdownData.countdown;
   nowPrayer.value = countdownData.nowPrayer;
   NEXTPRAYER.value = countdownData.nextPrayer;
-
-
-  console.log(countdownData.countdown)
 } catch (error) {
   console.error('Vakitler alınırken bir hata oluştu:', error);
 }

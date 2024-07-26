@@ -1,27 +1,25 @@
-<template>
-  <div class="background">
-    <div class="clock-container">
-      <div class="analog-clock">
-        <svg class="clock" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="48" />
-          <line :x1="50" :y1="50" :x2="50 + 45 * Math.sin(secondAngle)" :y2="50 - 45 * Math.cos(secondAngle)" class="second-hand" />
-          <line :x1="50" :y1="50" :x2="50 + 40 * Math.sin(minuteAngle)" :y2="50 - 40 * Math.cos(minuteAngle)" class="minute-hand" />
-          <line :x1="50" :y1="50" :x2="50 + 35 * Math.sin(hourAngle)" :y2="50 - 35 * Math.cos(hourAngle)" class="hour-hand" />
-        </svg>
-      </div>
-      <div class="digital-clock">{{ time }}</div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 
 import { ref, onMounted } from 'vue';
+import {fetchPhraseByID} from "@/components/phraseApi";
 
 const time = ref('');
 const secondAngle = ref(0);
 const minuteAngle = ref(0);
 const hourAngle = ref(0);
+const phraseData = ref('');
+const title = ref('');
+const phrase= ref('')
+
+try {
+  const data = await fetchPhraseByID(1);
+  phraseData.value = data
+  title.value = phraseData.value.phrases.title
+  phrase.value = phraseData.value.phrases.phrase
+
+} catch (error){
+  console.error('Özlü sözler alınırken hata oluştu!')
+}
 
 const updateTime = () => {
   const now = new Date();
@@ -36,6 +34,29 @@ onMounted(() => {
   setInterval(updateTime, 1000);
 });
 </script>
+
+
+<template>
+  <div class="background">
+
+     <div class="phrases">
+       <div>{{title}}</div>
+       <div>{{phrase}}</div>
+     </div>
+
+    <div class="container">
+      <div class="analog-clock">
+        <svg class="clock" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="48" />
+          <line :x1="50" :y1="50" :x2="50 + 45 * Math.sin(secondAngle)" :y2="50 - 45 * Math.cos(secondAngle)" class="second-hand" />
+          <line :x1="50" :y1="50" :x2="50 + 40 * Math.sin(minuteAngle)" :y2="50 - 40 * Math.cos(minuteAngle)" class="minute-hand" />
+          <line :x1="50" :y1="50" :x2="50 + 35 * Math.sin(hourAngle)" :y2="50 - 35 * Math.cos(hourAngle)" class="hour-hand" />
+        </svg>
+      </div>
+      <div class="digital-clock">{{ time }}</div>
+    </div>
+  </div>
+</template>
 
 <style>
 body, html {
@@ -56,13 +77,25 @@ body, html {
   width: 100vw;
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
   box-shadow: inset 0 0 450px rgba(1, 1, 1, 1); /* İçten gölge efekti */
 }
 
-.clock-container {
+.container {
   text-align: center;
   color: white;
+}
+
+.phrases {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  color : white;
 }
 
 .digital-clock {

@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"namaz-vakitleri/helpers"
 	"namaz-vakitleri/models"
 	"namaz-vakitleri/services"
 )
@@ -25,6 +27,12 @@ func (h *ContactHandler) Create(c *fiber.Ctx) error {
 	if err != nil {
 		log.Printf("Mesaj gönderilirken hata oluştu: %v\n", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Mesaj oluşturulurken hata oluştu"})
+	}
+
+	err = helpers.SendMailToAdmin(contact.Email, contact.Name, contact.Surname, contact.Email, contact.Message)
+	if err != nil {
+		fmt.Println("E-posta gönderilemedi:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Email gönderilirken hata oluştu"})
 	}
 
 	return c.SendString("Mesaj gönderildi!")

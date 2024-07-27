@@ -112,4 +112,20 @@ body, html {
   border-radius: 4px;
 }
 
+@media (max-width: 768px) {
+  .text-field, .city-list {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-field, .city-list {
+    max-width: 100%;
+  }
+
+  .city-list {
+    max-height: 200px;
+  }
+}
+
 </style>

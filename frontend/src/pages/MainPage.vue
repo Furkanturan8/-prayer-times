@@ -2,14 +2,24 @@
 
 import { ref, onMounted } from 'vue';
 import {fetchPhraseByID} from "@/components/phraseApi";
+import {updateTime} from "@/components/getTime";
 
-const time = ref('');
-const secondAngle = ref(0);
-const minuteAngle = ref(0);
-const hourAngle = ref(0);
 const phraseData = ref('');
 const title = ref('');
 const phrase= ref('')
+
+const currentTime = ref('');
+const currentSecondAngle = ref(0);
+const currentMinuteAngle = ref(0);
+const currentHourAngle = ref(0);
+
+const time = () => {
+  const timeData = updateTime();
+  currentTime.value = timeData.time;
+  currentSecondAngle.value = timeData.secondAngle;
+  currentMinuteAngle.value = timeData.minuteAngle;
+  currentHourAngle.value = timeData.hourAngle;
+};
 
 try {
   const data = await fetchPhraseByID(1);
@@ -21,17 +31,9 @@ try {
   console.error('Özlü sözler alınırken hata oluştu!')
 }
 
-const updateTime = () => {
-  const now = new Date();
-  time.value = now.toLocaleTimeString();
-  secondAngle.value = (now.getSeconds() / 60) * 2 * Math.PI;
-  minuteAngle.value = ((now.getMinutes() + now.getSeconds() / 60) / 60) * 2 * Math.PI;
-  hourAngle.value = ((now.getHours() % 12 + now.getMinutes() / 60) / 12) * 2 * Math.PI;
-};
-
 onMounted(() => {
-  updateTime();
-  setInterval(updateTime, 1000);
+  time();
+  setInterval(time, 1000);
 });
 </script>
 
@@ -48,12 +50,12 @@ onMounted(() => {
       <div class="analog-clock">
         <svg class="clock" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="48" />
-          <line :x1="50" :y1="50" :x2="50 + 45 * Math.sin(secondAngle)" :y2="50 - 45 * Math.cos(secondAngle)" class="second-hand" />
-          <line :x1="50" :y1="50" :x2="50 + 40 * Math.sin(minuteAngle)" :y2="50 - 40 * Math.cos(minuteAngle)" class="minute-hand" />
-          <line :x1="50" :y1="50" :x2="50 + 35 * Math.sin(hourAngle)" :y2="50 - 35 * Math.cos(hourAngle)" class="hour-hand" />
+          <line :x1="50" :y1="50" :x2="50 + 45 * Math.sin(currentSecondAngle)" :y2="50 - 45 * Math.cos(currentSecondAngle)" class="second-hand" />
+          <line :x1="50" :y1="50" :x2="50 + 40 * Math.sin(currentMinuteAngle)" :y2="50 - 40 * Math.cos(currentMinuteAngle)" class="minute-hand" />
+          <line :x1="50" :y1="50" :x2="50 + 35 * Math.sin(currentHourAngle)" :y2="50 - 35 * Math.cos(currentHourAngle)" class="hour-hand" />
         </svg>
       </div>
-      <div class="digital-clock">{{ time }}</div>
+      <div class="digital-clock">{{ currentTime }}</div>
     </div>
   </div>
 </template>
@@ -127,5 +129,23 @@ body, html {
 .analog-clock .clock .hour-hand {
   stroke: white;
   stroke-width: 6;
+}
+@media (max-width: 768px) {
+  .background {
+    padding: 10px;
+  }
+
+  .phrases {
+    font-size: 20px;
+  }
+
+  .digital-clock {
+    font-size: 2em;
+  }
+
+  .analog-clock .clock {
+    width: 150px;
+    height: 150px;
+  }
 }
 </style>

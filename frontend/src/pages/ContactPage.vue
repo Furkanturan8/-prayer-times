@@ -116,7 +116,7 @@ const createMessage = async (data) => {
 .contact {
   max-width: 600px;
   flex-direction: column;
-  width: 100%; /* Tam genişlikte olmasını sağlayın */
+  width: 100%;
   padding: 70px;
   background-color: rgba(0,0,0,0.9);
   border-radius: 8px;
@@ -186,13 +186,39 @@ button:hover {
 }
 
 .social-links a:hover {
-  color: #007bff; /* İstediğiniz renge göre değiştirebilirsiniz */
+  color: #007bff;
 }
 
 .social-links font-awesome-icon {
   margin-right: 8px;
 }
 .social-links span {
-  margin-left: 8px; /* İkon ile yazı arasına boşluk ekler */
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 10px;
+  }
+
+  .contact {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  button {
+    font-size: 14px;
+  }
+
+  .social-links a {
+    font-size: 1em;
+  }
 }
 </style>

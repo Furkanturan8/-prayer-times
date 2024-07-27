@@ -17,7 +17,7 @@ var CityCodes = map[string]int{
 	"aydin":         9,
 	"balikesir":     10,
 	"bilecik":       11,
-	"bingöl":        12,
+	"bingol":        12,
 	"bitlis":        13,
 	"bolu":          14,
 	"burdur":        15,

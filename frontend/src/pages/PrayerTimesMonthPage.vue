@@ -45,7 +45,8 @@ watch(currentPage, (newPage) => {
         Veriler Yükleniyor...
       </v-progress-circular>
 
-      <table v-else class="table table-striped table-dark">
+      <div class="table-container" v-else>
+      <table class="table table-striped table-dark">
         <thead>
         <tr>
           <th scope="col">Miladi Takvim</th>
@@ -71,6 +72,7 @@ watch(currentPage, (newPage) => {
         </tr>
         </tbody>
       </table>
+      </div>
       <div class="pagination">
         <button @click="currentPage = currentPage - 1" :disabled="currentPage === 1">
           &lt;
@@ -118,6 +120,7 @@ html, body {
   justify-content: center;
   align-items: center;
   box-shadow: inset 0 0 450px rgba(1, 1, 1, 1); /* Gölge efekti */
+  overflow-y: auto;
 }
 
 .title{
@@ -132,9 +135,13 @@ table {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.table-container {
+  overflow-x: auto;
+}
 th, td {
   padding: 15px;
   text-align: left;
+  word-wrap: break-word; /* Metin taşmaları için */
 }
 
 thead {
@@ -161,6 +168,8 @@ tbody tr:hover {
   height: auto;
   max-height: 100vh;
   overflow-y: auto;
+  margin-bottom: 50px;
+  margin-top: 120px;
 }
 
 .pagination {
@@ -189,5 +198,23 @@ tbody tr:hover {
 .pagination button:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
+}
+@media (max-width: 768px) {
+  .title {
+    font-size: 20px;
+    padding: 8px;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .pagination button {
+    padding: 8px 12px;
+  }
+  table {
+    font-size: 12px;
+  }
 }
 </style>

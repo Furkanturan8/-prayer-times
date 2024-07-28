@@ -9,7 +9,7 @@ const cities = ref([]);
 // backenddeki cities e ulaşıyoruz axios yardımıyla
 const fetchCities = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/cities'); // API URL'nizi buraya ekleyin
+    const response = await axios.get('https://prayer-times-gc0c.onrender.com/cities'); // API URL'nizi buraya ekleyin
     cities.value = response.data.cities; // API'den gelen şehirler verisini alıyoruz
   } catch (error) {
     console.error('Şehirler alınırken bir hata oluştu:', error);

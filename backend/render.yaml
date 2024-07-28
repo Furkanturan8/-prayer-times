@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: prayer-times
+    env: go
+    plan: free
+    buildCommand: 'go build -tags netgo -ldflags "-s -w" -o main main.go'
+    startCommand: './main'

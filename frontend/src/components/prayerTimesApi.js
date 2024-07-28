@@ -4,7 +4,7 @@ export const fetchPrayerTimesByDay = async (cityName) => {
     const now = new Date();
     let today = now.getDate()
     try {
-        const response = await axios.get(`http://localhost:3000/prayer-times/${cityName}/${today}`);
+        const response = await axios.get(`https://prayer-times-gc0c.onrender.com/prayer-times/${cityName}/${today}`);
         return response.data;
     } catch (error) {
         console.error('Vakitler alınırken bir hata oluştu:', error);

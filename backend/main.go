@@ -58,7 +58,8 @@ func main() {
 	routes.PrayerTimeRoutes(app, prayerTimesHandler)
 	routes.ContactRoutes(app, contactHandler)
 
-	app.Listen(":3000")
+	// Portu config'den al
+	app.Listen(":" + cfg.Port)
 }
 
 func requestLogger(c *fiber.Ctx) error {

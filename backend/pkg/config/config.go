@@ -20,6 +20,7 @@ type Config struct {
 	EmailPassword string
 	SMTPPort      int
 	SMTPServer    string
+	Port          string
 }
 
 // Load loads configuration from environment variables or .env file
@@ -49,6 +50,7 @@ func Load() (*Config, error) {
 		EmailPassword: getEnv("EMAIL_PASSWORD", "default_email_password"),
 		SMTPPort:      smtpPort,
 		SMTPServer:    getEnv("SMTP_SERVER", "smtp.example.com"),
+		Port:          getEnv("PORT", "3000"),
 	}
 
 	return config, nil

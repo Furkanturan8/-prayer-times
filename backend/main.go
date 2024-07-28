@@ -29,7 +29,7 @@ func main() {
 
 	// CORS middleware'i ekleyin
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:8080", // Vue uygulamanızın çalıştığı adres
+		AllowOrigins: "http://localhost:8080, https://prayer-times-kappa.vercel.app", // Vue uygulamanızın çalıştığı adres
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 

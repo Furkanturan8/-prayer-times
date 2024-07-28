@@ -9,14 +9,7 @@ import (
 	"namaz-vakitleri/pkg/config"
 )
 
-func DBInstance() (*gorm.DB, error) {
-
-	// Yapılandırma dosyasını yükle (db için gerekli parametreleri alıyoruz)
-	cfg, err := config.Load()
-	if err != nil {
-		return nil, fmt.Errorf("error loading configuration: %v", err)
-	}
-
+func DBInstance(cfg *config.Config) (*gorm.DB, error) {
 	// MySQL DSN oluştur
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg.MySQLUsername, cfg.MySQLPassword, cfg.MySQLHost, cfg.MySQLPort, cfg.MySQLDBName)

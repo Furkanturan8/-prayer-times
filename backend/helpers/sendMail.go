@@ -3,22 +3,16 @@ package helpers
 import (
 	"fmt"
 	gomail "gopkg.in/mail.v2"
-	"os"
-	"strconv"
+	"namaz-vakitleri/pkg/config"
 )
 
-func SendMailToAdmin(from, name, surname, email, message string) error {
+func SendMailToAdmin(cfg *config.Config, from, name, surname, email, message string) error {
 	// SMTP sunucusu ve kimlik bilgileri
-	smtpServer := os.Getenv("SMTP_SERVER")
-	_smtpPort := os.Getenv("SMTP_PORT")
-	smtpEmail := os.Getenv("EMAIL_ADDRESS")
-	smtpPassword := os.Getenv("EMAIL_PASSWORD")
+	smtpServer := cfg.SMTPServer
+	smtpPort := cfg.SMTPPort
+	smtpEmail := cfg.EmailAddress
+	smtpPassword := cfg.EmailPassword
 
-	smtpPort, err := strconv.Atoi(_smtpPort)
-	if err != nil {
-		fmt.Errorf("smtp port veri tipi int a çevilmedi", err)
-		return err
-	}
 	if smtpPassword == "" {
 		return fmt.Errorf("SMTP şifresi çevresel değişkende bulunamadı")
 	}

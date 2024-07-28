@@ -6,15 +6,20 @@ import (
 	"log"
 	"namaz-vakitleri/helpers"
 	"namaz-vakitleri/models"
+	"namaz-vakitleri/pkg/config"
 	"namaz-vakitleri/services"
 )
 
 type ContactHandler struct {
 	Services *services.ContactService
+	Config   *config.Config
 }
 
-func NewContactHandler(service *services.ContactService) *ContactHandler {
-	return &ContactHandler{Services: service}
+func NewContactHandler(service *services.ContactService, cfg *config.Config) *ContactHandler {
+	return &ContactHandler{
+		Services: service,
+		Config:   cfg,
+	}
 }
 
 func (h *ContactHandler) Create(c *fiber.Ctx) error {
@@ -29,7 +34,7 @@ func (h *ContactHandler) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Mesaj oluşturulurken hata oluştu"})
 	}
 
-	err = helpers.SendMailToAdmin(contact.Email, contact.Name, contact.Surname, contact.Email, contact.Message)
+	err = helpers.SendMailToAdmin(h.Config, contact.Email, contact.Name, contact.Surname, contact.Email, contact.Message)
 	if err != nil {
 		fmt.Println("E-posta gönderilemedi:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Email gönderilirken hata oluştu"})

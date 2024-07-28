@@ -3,6 +3,7 @@ package config
 import (
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -14,6 +15,11 @@ type Config struct {
 	MySQLHost     string
 	MySQLPort     string
 	MySQLDBName   string
+	SecretKey     string
+	EmailAddress  string
+	EmailPassword string
+	SMTPPort      int
+	SMTPServer    string
 }
 
 // Load loads configuration from environment variables or .env file
@@ -24,6 +30,13 @@ func Load() (*Config, error) {
 		log.Println("Error loading .env file, using default environment variables.")
 	}
 
+	// Parse SMTP port as an integer
+	smtpPort, err := strconv.Atoi(getEnv("SMTP_PORT", "587"))
+	if err != nil {
+		log.Println("Invalid SMTP port, using default 587.")
+		smtpPort = 587
+	}
+
 	// Initialize configuration struct
 	config := &Config{
 		MySQLUsername: getEnv("MYSQL_USERNAME", "username"),
@@ -31,6 +44,11 @@ func Load() (*Config, error) {
 		MySQLHost:     getEnv("MYSQL_HOST", "localhost"),
 		MySQLPort:     getEnv("MYSQL_PORT", "3306"),
 		MySQLDBName:   getEnv("MYSQL_DBNAME", "dbname"),
+		SecretKey:     getEnv("SECRET_KEY", "default_secret_key"),
+		EmailAddress:  getEnv("EMAIL_ADDRESS", "default_email@example.com"),
+		EmailPassword: getEnv("EMAIL_PASSWORD", "default_email_password"),
+		SMTPPort:      smtpPort,
+		SMTPServer:    getEnv("SMTP_SERVER", "smtp.example.com"),
 	}
 
 	return config, nil

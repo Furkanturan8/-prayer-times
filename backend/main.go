@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"log"
 	"namaz-vakitleri/database"
 	"namaz-vakitleri/handlers"
+	"namaz-vakitleri/pkg/config"
 	"namaz-vakitleri/routes"
 	"namaz-vakitleri/services"
 	"time"
@@ -13,6 +15,12 @@ import (
 
 func main() {
 	fmt.Println("\n--------------BİSMİLLAH--------------\n")
+
+	// Yapılandırma dosyasını yükle
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("Error loading configuration: %v", err)
+	}
 
 	app := fiber.New()
 
@@ -26,7 +34,7 @@ func main() {
 	}))
 
 	// DB Init
-	db, err := database.DBInstance()
+	db, err := database.DBInstance(cfg)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -43,7 +51,7 @@ func main() {
 	prayerTimesHandler := handlers.NewPrayerTimeHandler(prayerTimesService)
 	cityHandler := handlers.NewCityHandler(cityService)
 	phraseHandler := handlers.NewPhraseHandler(phraseService)
-	contactHandler := handlers.NewContactHandler(contactService)
+	contactHandler := handlers.NewContactHandler(contactService, cfg)
 
 	routes.PhraseRoutes(app, phraseHandler)
 	routes.CityRoutes(app, cityHandler)

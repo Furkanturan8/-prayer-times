@@ -29,7 +29,7 @@ func main() {
 
 	// CORS middleware'i ekleyin
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:8080, https://prayer-times-kappa.vercel.app", // Vue uygulamanızın çalıştığı adres
+		AllowOrigins: "http://localhost:8080", // Vue uygulamanızın çalıştığı adres
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
@@ -41,7 +41,10 @@ func main() {
 	// fmt.Println("DB Address: ", db)
 
 	// API Base URL
-	apiBaseURL := "https://api.aladhan.com/v1/calendarByCity/2024/7?country=turkey&city="
+	year := time.Now().Year()
+	month := int(time.Now().Month()) // Ayı tamsayı olarak almak için
+	apiBaseURL := fmt.Sprintf("https://api.aladhan.com/v1/calendarByCity/%d/%02d?country=turkey&city=", year, month)
+	fmt.Println(apiBaseURL)
 
 	prayerTimesService := services.NewPrayerTimeService(apiBaseURL)
 	cityService := services.NewCityService()
